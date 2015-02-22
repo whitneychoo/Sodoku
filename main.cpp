@@ -4,7 +4,7 @@
 #include "Puzzle.h"
 using namespace std;
 
-int main(){
+int main() {
 
 	Puzzle<int> puzzle;
 

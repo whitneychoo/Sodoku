@@ -36,6 +36,7 @@ Puzzle<T>::Puzzle(){
 		for(int i = 0; i < 9; i++){
 			inFile >> value;
 			tempVec.push_back(value);
+			cout << value;
 		}
 		Sodoku.push_back(tempVec);
 		tempVec.clear();
