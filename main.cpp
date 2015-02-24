@@ -6,7 +6,8 @@ using namespace std;
 
 int main() {
 
-	Puzzle<int> puzzle;
+	Puzzle<int> puzzle("puzzle.txt");
+	puzzle.play();
 
 	return 0;
 }
