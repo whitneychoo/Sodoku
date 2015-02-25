@@ -1,7 +1,0 @@
-all:	main
-
-main:	main.cpp Puzzle.h
-	g++ main.cpp -0 main
-
-clean:	
-	rm *.o main
