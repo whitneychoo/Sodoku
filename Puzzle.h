@@ -21,81 +21,66 @@ class Puzzle {
 	int checkWin();				// checks if win
 	private:
 	vector<T> vec;			
-	vector <vector <T> > Sodoku;		// 2D vector
+	vector <vector <T> > Sudoku;		// 2D vector
 };
 // function to check for win
 template <typename T>
 int Puzzle<T>::checkWin(){
 	int i, j, k, count = 0;
+
 	for(i = 0; i < 9; i++){				// if any spots are equal to 0, then it is not game over yet
 		for(j = 0; j < 9; j++){
-			if(Sodoku[i][j] == 0)
+			if(Sudoku[i][j] == 0 || Sudoku[i][j] == '0')
 				return 0;			// code to indicate incomplete game
 		}
 	}
-	for(i = 0; i < 9; i++){			
-		for(j = 0; j < 9; j++){
-			for(k = 0; k < 9; k++){			// check the columns
-				if(Sodoku[k][j] == i){
-					count++;
-					if(count > 1){
-						return 1;
-					}
-				}
-			}
-			count = 0;
-		}			
-	}
-	for(i = 0; i < 9; i++){			
-		for(j = 0; j < 9; j++){
-			for(k = 0; k < 9; k++){			// check the rows
-				if(Sodoku[j][k] == i){
-					count++;
-					if(count > 1){
-						return 1;
-					}
-				}
-			}
-			count = 0;
-		}			
-	}
-	
 
-// function to play Sodoku
+	cout << "Congrats, you successfully solved the Sudoku board!" << endl;
+	return 1;						// win
+}
+
+// function to play Sudoku
 template <typename T>
 void Puzzle<T>::play(){
-	int row, column;
-	while(1){
-		print();
+	int row, column, win = 0;
 
-		cout << "Which row would you like to play your input?: ";
-		cin >> row;
-		cout << "Which column would you like to play your input?: ";
-		cin >> column;
+	print();
+	do{
+		do{			
+			cout << "Which row would you like to play your input?: ";	// ask for valid row input
+			cin >> row;
+		}while(row <= 0 || row > 9);						// repeat if invalid
 
-		checkEmpty(row, column);
+		do{	
+			cout << "Which column would you like to play your input?: ";	// ask for valid column input
+			cin >> column;
+		}while(column <=0 || column > 9);					// repeat if invalid
 
-		}
+		checkEmpty(row, column);						// check if empty space
+		print();								// print board
+		win = checkWin();							// check if there is a win
+	}while(win == 0);
 }
 				
 
 // adds piece into board
 template <typename T>
 void Puzzle<T>::add(int x, int y, T input){
-	Sodoku[x][y] = input;
+	Sudoku[x][y] = input;	
 }
+
 // checks if input is valid
 template <typename T>
 int Puzzle<T>::checkValid(int x, int y, T input){
 	int xmod, ymod, m, n;
 	for(int i = 0; i < 9; i++){
-		if(Sodoku[x][i] == input){						// if there is a piece in the row
+		if(Sudoku[x][i] == input){						// if there is a piece in the row
 			cout << "Error. Already a " << input << " in the row.\n";	// with same value, reject
 			return 0;			
 		}
 	}
 	for(int j = 0; j < 9; j++){							// if there is a piece in the column
-		if(Sodoku[j][y] == input){						// with same value, reject
+		if(Sudoku[j][y] == input){						// with same value, reject
 			cout << "Error. Already a " << input << " in the column.\n";
 			return 0;
 		}
@@ -104,7 +89,7 @@ int Puzzle<T>::checkValid(int x, int y, T input){
 	xmod = x % 3;				// use the mod as a "code" to determine where the square is
 	ymod = y % 3;
 	
-	switch(xmod){
+	switch(xmod){				// depending on the row & column input, change it to check the square it belongs to
 		case 1: m = x-1;
 			break;
 		case 2: m = x-2;
@@ -121,9 +106,9 @@ int Puzzle<T>::checkValid(int x, int y, T input){
 			break;
 	}
 
-	for(int k = m; k < m + 3; k++){					// check the square for same entry
+	for(int k = m; k < m + 3; k++){					// check the square for same input
 		for(int l = n; l < n + 3; l++){
-			if(Sodoku[k][l] == input){
+			if(Sudoku[k][l] == input){
 				cout << "Error. Already a " << input << " in the square.\n";
 				return 0;
 			}
@@ -137,29 +122,29 @@ int Puzzle<T>::checkValid(int x, int y, T input){
 template <typename T>
 void Puzzle<T>::checkEmpty(int x, int y){
 	T input;
-	if(Sodoku[x-1][y-1] == 0){
+	if(Sudoku[x-1][y-1] == 0 || Sudoku[x-1][y-1] == '0'){		// check if it is "empty"
 		cout << "What value would you like to add?: ";
-		cin >> input;
-		if(checkValid(x-1, y-1, input)){
-			add(x-1, y-1, input);
+		cin >> input;						// ask for input
+		if(checkValid(x-1, y-1, input)){			// if the input is valid
+			add(x-1, y-1, input);				// add it into the board
 		}
 	} else {
-		cout << "That spot is taken."<< endl;
+		cout << "That spot is taken."<< endl;			// if the space is not empty, say that it is taken
 	}
 }
 
 
-// print the Sodoku board
+// print the Sudoku board
 template <typename T>
 void Puzzle<T>::print(){
-	for(int i = 0; i < 9; i++){
+	for(int i = 0; i < 9; i++){							// for every row
 		cout << "-------------------------------------" << endl << "| ";
-		for(int j = 0; j < 9; j++){
-			if(Sodoku[i][j] == 0){
+		for(int j = 0; j < 9; j++){						// for every column
+			if(Sudoku[i][j] == 0){
 				cout << "  | ";
 			} else {
 				
-				cout << Sodoku[i][j] << " | ";
+				cout << Sudoku[i][j] << " | ";
 			}
 		}
 		cout << endl;
@@ -167,10 +152,10 @@ void Puzzle<T>::print(){
 	cout << "-------------------------------------" << endl << endl;
 }
 
-// constructor
+// non default constructor
 template <typename T>
 Puzzle<T>::Puzzle(string fileName){
-	vector<T> tempVec;
+	vector<T> tempVec;			// temporary vector
 	T value;
 
 	ifstream inFile;			// open the file
@@ -181,7 +166,7 @@ Puzzle<T>::Puzzle(string fileName){
 			inFile >> value;	// set value as what is read from inFile
 			tempVec.push_back(value);	// put into temporary vector
 		}
-		Sodoku.push_back(tempVec);		// set sodoku board using temp vector
+		Sudoku.push_back(tempVec);		// set sodoku board using temp vector
 		tempVec.clear();			// clears the tempVec
 	}		
 }
